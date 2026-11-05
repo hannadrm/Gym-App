@@ -1,0 +1,77 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4a7c7"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>fetter Arsch</title><link rel="manifest" href="manifest.webmanifest">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fffaf6;color:#3d2c35;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:18px;position:sticky;top:0;background:#fffaf6ee;backdrop-filter:blur(12px);z-index:5;border-bottom:1px solid #f0dfe6}
+h1{margin:0;font-size:27px}h2{font-size:21px}.sub,.muted{color:#7b6871;font-size:13px}main{max-width:760px;margin:auto;padding:16px 16px 95px}
+.page{display:none}.page.active{display:block}.card{background:#fff;border:1px solid #f0dfe6;border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 4px 16px #4623320d}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#ffd9e8;border-radius:15px;padding:12px}.stat b{display:block;font-size:20px}
+button,input,select{font:inherit}button{border:0;border-radius:13px;padding:12px 14px;background:#f4a7c7;color:#3d2c35;font-weight:700}button.secondary{background:#f7edf1}.full{width:100%;margin-top:9px}
+input,select{width:100%;padding:12px;border:1px solid #f0dfe6;border-radius:13px;background:#fff;color:#3d2c35}.row{display:flex;gap:8px}.row>*{flex:1}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #f0dfe6;display:flex;justify-content:space-around;padding:7px 3px calc(7px + env(safe-area-inset-bottom));z-index:9}
+.nav{background:transparent;color:#7b6871;padding:7px;font-size:11px}.nav.active{color:#a84773}.item{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-top:1px solid #f0dfe6}.item:first-child{border-top:0}
+.camera{background:#171216;border-radius:17px;overflow:hidden}.camera video{width:100%;display:block}.notice{background:#fff6d9;border:1px solid #f0df9e;border-radius:13px;padding:11px;font-size:13px}
+</style></head><body>
+<header><h1>fetter Arsch</h1><div class="sub">Ernährung · Training · Fortschritt</div></header>
+<main>
+<section id="home" class="page active"><div class="card"><h2>Heute</h2><div class="stats">
+<div class="stat"><b id="kcal">0</b><span>kcal</span></div><div class="stat"><b id="prot">0 g</b><span>Eiweiß</span></div><div class="stat"><b id="wat">0 / 1,8 L</b><span>Wasser</span></div></div></div>
+<div class="card"><h2>Meine Einschätzung</h2><div id="coach" class="muted">Trag Lebensmittel ein, dann bekommst du konkrete Hinweise.</div></div>
+<div class="card"><div class="grid"><button onclick="show('food')">+ Essen</button><button onclick="show('scan')">Scan / Foto</button><button onclick="water()">+ 250 ml</button><button onclick="show('training')">Training</button></div></div></section>
+
+<section id="food" class="page"><div class="card"><h2>Lebensmittel</h2><input id="q" placeholder="z. B. Brötchen, Skyr, Banane …" oninput="search()"><div id="results"></div>
+<button class="secondary full" onclick="show('scan')">▣ Barcode scannen / 📷 Foto</button></div>
+<div class="card"><h2>Eigenes Lebensmittel</h2><div class="row"><input id="cn" placeholder="Name"><input id="ck" type="number" placeholder="kcal/100g"></div>
+<div class="row" style="margin-top:8px"><input id="cp" type="number" placeholder="Eiweiß"><input id="cc" type="number" placeholder="KH"><input id="cf" type="number" placeholder="Fett"></div>
+<button class="full" onclick="custom()">Speichern</button></div><div class="card"><h2>Heute gegessen</h2><div id="meals"></div></div></section>
+
+<section id="scan" class="page"><div class="card"><h2>Lebensmittel erkennen</h2><div class="notice"><b>Barcode:</b> beste Wahl für verpackte Produkte. <b>Foto:</b> gut für die Nährwerttabelle. Ein loses Brötchen kann per Foto nur geschätzt werden.</div></div>
+<div class="card"><h3>▣ Barcode scannen</h3><div id="cam" class="camera" style="display:none"><video id="video" playsinline></video></div>
+<button class="full" onclick="scan()">Kamera öffnen & Barcode scannen</button><div id="scanmsg" class="muted"></div></div>
+<div class="card"><h3>📷 Foto von Verpackung / Nährwerttabelle</h3><input type="file" accept="image/*" capture="environment" onchange="photo(this)"><div id="ocr" class="muted" style="margin-top:8px"></div></div>
+<div class="card"><h3>📷 Foto von losem Lebensmittel</h3><p class="muted">Bei einem Brötchen ist ein Foto keine exakte Nährwertmessung. Die App schlägt deshalb einen plausiblen Schätzwert vor, den du bestätigen kannst.</p>
+<input type="file" accept="image/*" capture="environment" onchange="loose()"><div id="loose"></div></div></section>
+
+<section id="training" class="page"><div class="card"><h2>Trainingsplan</h2><select id="goal"><option>Beine & Po</option><option>Po-Fokus</option><option>Oberkörper</option><option>Ganzkörper</option><option>Bauch</option></select>
+<select id="dur" style="margin-top:8px"><option>30</option><option>45</option><option>60</option><option>90</option></select><button class="full" onclick="plan()">Plan erstellen</button><div id="plan"></div></div>
+<div class="card"><h2>Übungen</h2><div id="ex"></div></div></section>
+
+<section id="progress" class="page"><div class="card"><h2>Fortschritt</h2><div class="row"><input id="w" type="number" step=".1" placeholder="kg"><input id="wa" type="number" step=".1" placeholder="Taille"><input id="hi" type="number" step=".1" placeholder="Hüfte"></div><button class="full" onclick="prog()">Speichern</button></div><div class="card" id="plist"></div></section>
+</main>
+<nav class="bottom"><button class="nav active" data-p="home" onclick="show('home')">Home</button><button class="nav" data-p="food" onclick="show('food')">Essen</button><button class="nav" data-p="scan" onclick="show('scan')">Scan</button><button class="nav" data-p="training" onclick="show('training')">Training</button><button class="nav" data-p="progress" onclick="show('progress')">Fortschritt</button></nav>
+
+<script src="https://unpkg.com/@zxing/browser@0.1.5/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const F=[
+["Brötchen",250,8,48,2,"1 Stück"],["Mehrkornbrötchen",245,9,43,4,"1 Stück"],["Vollkornbrötchen",230,9,40,3,"1 Stück"],
+["Banane",89,1.1,23,.3,"1 Stück"],["Apfel",52,.3,14,.2,"1 Stück"],["Skyr natur",63,11,4,.2,"1 Becher"],["Vanille Skyr",75,8.5,8,.2,"1 Becher"],["Ei",143,13,1.1,10,"1 Stück"],
+["Haferflocken",370,13,59,7,"4 EL"],["Vollkornbrot",220,8,40,2.5,"1 Scheibe"],["Toast",260,8,48,4,"1 Scheibe"],["Reis gekocht",130,2.7,28,.3,"1 Tasse"],
+["Nudeln gekocht",150,5,30,1,"1 Teller"],["Kartoffeln gekocht",77,2,17,.1,"1 Portion"],["Reiswaffel",387,8,81,3,"1 Stück"],
+["Erdnussbutter",588,25,20,50,"1 EL"],["Hähnchenbrust",110,23,0,1.5,"1 Handfläche"],["Putenbrust",105,24,0,1,"1 Handfläche"],
+["Rinderhack mager",145,21,0,6,"1 Handfläche"],["Tofu",145,16,2,9,"1 Handfläche"],["Kidneybohnen",127,9,23,.5,"1 Tasse"],["Cottage Cheese",98,12,3,4,"1 Becher"]
+];
+let S=JSON.parse(localStorage.getItem("faScan")||"null")||{meals:[],water:0,custom:[],progress:[]};let foods=[...F,...S.custom];let controls;
+function save(){localStorage.setItem("faScan",JSON.stringify(S))}
+function show(id){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.p==id));if(id=="food"){search();meals()}if(id=="home")home();if(id=="training")exercise();if(id=="progress")renderProg()}
+function home(){let k=S.meals.reduce((a,x)=>a+x.k,0),p=S.meals.reduce((a,x)=>a+x.p,0);document.getElementById("kcal").textContent=Math.round(k);document.getElementById("prot").textContent=Math.round(p)+" g";document.getElementById("wat").textContent=S.water.toFixed(2).replace(".",",")+" / 1,8 L";let t=[];if(p<100)t.push("Heute fehlt dir wahrscheinlich noch Eiweiß.");if(k<1500)t.push("Bisher ist deine Energiezufuhr eher niedrig.");if(S.water<1.5)t.push("Trink noch etwas Wasser.");document.getElementById("coach").textContent=t.slice(0,3).join(" ")||"Sieht für heute schon solide aus."}
+function search(){let q=document.getElementById("q").value.toLowerCase(),a=foods.filter(x=>!q||x[0].toLowerCase().includes(q)).slice(0,12);document.getElementById("results").innerHTML=a.map(x=>'<div class="item"><div><b>'+x[0]+'</b><div class="muted">'+x[1]+' kcal · '+x[2]+' g Eiweiß · '+x[3]+' g KH · '+x[4]+' g Fett<br>'+x[5]+'</div></div><button onclick='add('+JSON.stringify(x)+')'>+ Essen</button></div>').join("")}
+function add(x){let n=parseFloat(prompt("Wie viele Portionen?","1")?.replace(",","."));if(!n)return;S.meals.push({n:x[0],k:x[1]*n,p:x[2]*n,portion:n+" × "+x[5]});save();meals();home()}
+function meals(){document.getElementById("meals").innerHTML=S.meals.length?S.meals.map((x,i)=>'<div class="item"><div><b>'+x.n+'</b><div class="muted">'+x.portion+' · '+Math.round(x.k)+' kcal · '+x.p.toFixed(1)+' g Eiweiß</div></div><button class="secondary" onclick="del('+i+')">Löschen</button></div>').join(""):"<span class='muted'>Noch nichts eingetragen.</span>"}
+function del(i){S.meals.splice(i,1);save();meals();home()}
+function water(){S.water+=.25;save();home()}
+function custom(){let n=document.getElementById("cn").value,k=+document.getElementById("ck").value,p=+document.getElementById("cp").value,c=+document.getElementById("cc").value,f=+document.getElementById("cf").value;if(!n||!k)return alert("Name und kcal bitte ausfüllen.");let x=[n,k,p||0,c||0,f||0,"100 g"];S.custom.push(x);foods=[...F,...S.custom];save();search();alert("Gespeichert.")}
+async function scan(){let cam=document.getElementById("cam"),msg=document.getElementById("scanmsg");cam.style.display="block";msg.textContent="Barcode vor die Kamera halten …";try{let r=new ZXingBrowser.BrowserMultiFormatReader();controls=await r.decodeFromConstraints({video:{facingMode:{ideal:"environment"}}},document.getElementById("video"),async z=>{if(z){controls?.stop();cam.style.display="none";await barcode(z.getText())}})}catch(e){msg.textContent="Kamera konnte nicht gestartet werden. Kamerazugriff erlauben und Seite über HTTPS öffnen."}}
+async function barcode(code){let msg=document.getElementById("scanmsg");msg.textContent="Produkt wird gesucht …";try{let r=await fetch("https://world.openfoodfacts.org/api/v2/product/"+encodeURIComponent(code)+".json"),d=await r.json();if(d.status!==1){msg.textContent="Nicht gefunden. Nutze ein Foto der Nährwerttabelle oder die manuelle Suche.";return}let p=d.product,n=p.nutriments||{},x=[p.product_name_de||p.product_name||"Produkt",+(n["energy-kcal_100g"]||0),+(n.proteins_100g||0),+(n.carbohydrates_100g||0),+(n.fat_100g||0),"100 g"];foods.unshift(x);msg.innerHTML="Gefunden: <b>"+x[0]+"</b> · "+x[1]+" kcal / 100 g";let b=document.createElement("button");b.className="full";b.textContent="Zum Essen hinzufügen";b.onclick=()=>add(x);msg.appendChild(b)}catch(e){msg.textContent="Produktsuche fehlgeschlagen. Internetverbindung prüfen."}}
+async function photo(input){if(!input.files[0])return;let out=document.getElementById("ocr");out.textContent="Foto wird gelesen …";try{let r=await Tesseract.recognize(input.files[0],"deu+eng",{logger:m=>{if(m.status=="recognizing text")out.textContent="Nährwerttabelle: "+Math.round(m.progress*100)+" %"}});let text=r.data.text;out.innerHTML="<div class='notice'><b>Erkannter Text:</b><br>"+text.replace(/</g,"&lt;").slice(0,1500)+"</div><button class='full' onclick='show("food")'>Jetzt Lebensmittel anlegen / korrigieren</button>"}catch(e){out.textContent="Foto konnte nicht gelesen werden. Nimm ein scharfes Foto direkt von der Nährwerttabelle."}}
+function loose(){document.getElementById("loose").innerHTML="<div class='notice' style='margin-top:10px'><b>Schätzwert:</b> Für ein normales Brötchen kannst du zunächst ca. 250 kcal pro 100 g ansetzen. Die App behandelt das ausdrücklich als Schätzung.</div><button class='full' onclick='show("food");document.getElementById("q").value="Brötchen";search()'>Brötchen auswählen</button>"}
+const E=[["Beinpresse","Beine · Po","3 × 8–12"],["Hip-Thrust-Maschine","Po","3 × 8–12"],["Abduktoren","Po","3 × 12–15"],["Beinbeuger","Oberschenkelrückseite","3 × 10–12"],["Beinstrecker","Quadrizeps","3 × 10–12"],["Latzug","Rücken · Bizeps","3 × 8–12"],["Rudermaschine","Rücken","3 × 8–12"],["Brustpresse","Brust · Trizeps","3 × 8–12"],["Schulterpresse","Schultern","2–3 × 8–12"],["Butterfly","Brust","2–3 × 10–15"],["Rückenstrecker","Rücken · Po","2 × 10–15"],["Bauchmaschine","Bauch","2–3 × 10–15"]];
+function exercise(){document.getElementById("ex").innerHTML=E.map(x=>'<div class="item"><div><b>'+x[0]+'</b><div class="muted">'+x[1]+' · Anfänger: '+x[2]+'</div></div></div>').join("")}
+function plan(){let g=document.getElementById("goal").value,d=+document.getElementById("dur").value;let names=g=="Po-Fokus"?["Hip-Thrust-Maschine","Abduktoren","Beinpresse","Beinbeuger"]:g=="Oberkörper"?["Latzug","Rudermaschine","Brustpresse","Schulterpresse"]:g=="Bauch"?["Bauchmaschine","Rückenstrecker"]:g=="Ganzkörper"?["Beinpresse","Latzug","Brustpresse","Hip-Thrust-Maschine","Bauchmaschine"]:["Beinpresse","Hip-Thrust-Maschine","Beinbeuger","Abduktoren","Beinstrecker"];let n=d<=30?4:d<=45?5:6;document.getElementById("plan").innerHTML="<h3>"+g+" · "+d+" Min.</h3>"+names.slice(0,n).map((x,i)=>'<div class="item"><b>'+String(i+1)+". "+x+'</b><span class="muted">3 Sätze · 8–12 Wdh.</span></div>').join("")}
+function prog(){let w=+document.getElementById("w").value,wa=+document.getElementById("wa").value,h=+document.getElementById("hi").value;if(!w&&!wa&&!h)return;S.progress.push({d:new Date().toLocaleDateString("de-DE"),w,wa,h});save();renderProg()}
+function renderProg(){document.getElementById("plist").innerHTML=S.progress.slice().reverse().map(x=>'<div class="item"><b>'+x.d+'</b><span class="muted">'+(x.w?x.w+" kg ":"")+(x.wa?x.wa+" cm Taille ":"")+(x.h?x.h+" cm Hüfte":"")+"</span></div>").join("")||"<span class='muted'>Noch keine Einträge.</span>"}
+home();search();exercise();
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
+</script></body></html>
